@@ -34,18 +34,18 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
 
   const addProduct = async (productId: number) => {
     try {
-      const productAlreadyExists = cart.find(
+      const productExists = cart.find(
         product => product.id === productId
       );
 
-      if (productAlreadyExists) {
-        const { amount: productAmount } = productAlreadyExists;
+      if (productExists) {
+        const { amount: productAmount } = productExists;
 
         const { data: stock } = await api.get<Stock>(`stock/${productId}`);
 
-        const productIsAvailableInStock = stock.amount > productAmount;
+        const IsAvailableProductInStock = stock.amount > productAmount;
 
-        if (!productIsAvailableInStock) {
+        if (!IsAvailableProductInStock) {
           toast.error('Quantidade solicitada fora de estoque');
 
           return;
@@ -84,11 +84,11 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
 
   const removeProduct = (productId: number) => {
     try {
-      const productAlreadyExists = cart.find(
+      const productExists = cart.find(
         product => product.id === productId
       );
 
-      if (!productAlreadyExists) throw Error();
+      if (!productExists) throw Error();
 
       const filteredCart = cart.filter(product => product.id !== productId);
 
@@ -109,19 +109,19 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
 
       const { data: stock } = await api.get<Stock>(`stock/${productId}`);
 
-      const productIsAvailableInStock = stock.amount >= amount;
+      const IsAvailableProductInStock = stock.amount >= amount;
 
-      if (!productIsAvailableInStock) {
+      if (!IsAvailableProductInStock) {
         toast.error('Quantidade solicitada fora de estoque');
 
         return;
       }
 
-      const productAlreadyExists = cart.find(
+      const productExists = cart.find(
         product => product.id === productId
       );
 
-      if (!productAlreadyExists) throw Error();
+      if (!productExists) throw Error();
 
       const updatedAmountCartProduct = cart.map(product => {
         return product.id === productId ? { ...product, amount } : product;
